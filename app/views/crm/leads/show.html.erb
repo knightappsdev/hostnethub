@@ -1,0 +1,289 @@
+<div class="bg-background text-foreground min-h-screen">
+  <!-- Header -->
+  <div class="bg-white border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900"><%= @lead.full_name %></h1>
+            <p class="mt-1 text-sm text-gray-500"><%= @lead.company %> • <%= @lead.email %></p>
+          </div>
+          <div class="flex space-x-3">
+            <% if @lead.qualified? %>
+              <%= link_to "Convert to Contact", convert_to_contact_crm_lead_path(@lead), method: :post,
+                  confirm: "Are you sure you want to convert this lead to a contact?",
+                  class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors" %>
+            <% end %>
+            <%= link_to "Edit", edit_crm_lead_path(@lead), class: "bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+            <%= link_to "Back to Leads", crm_leads_path, class: "bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Lead Details -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Overview -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-6">Lead Overview</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="text-sm font-medium text-gray-500 mb-2">Contact Information</h4>
+              <div class="space-y-2">
+                <p class="text-sm text-gray-900"><strong>Name:</strong> <%= @lead.full_name %></p>
+                <p class="text-sm text-gray-900"><strong>Email:</strong> <%= @lead.email %></p>
+                <% if @lead.phone.present? %>
+                  <p class="text-sm text-gray-900"><strong>Phone:</strong> <%= @lead.phone %></p>
+                <% end %>
+                <% if @lead.job_title.present? %>
+                  <p class="text-sm text-gray-900"><strong>Job Title:</strong> <%= @lead.job_title %></p>
+                <% end %>
+              </div>
+            </div>
+
+            <div>
+              <h4 class="text-sm font-medium text-gray-500 mb-2">Company Information</h4>
+              <div class="space-y-2">
+                <% if @lead.company.present? %>
+                  <p class="text-sm text-gray-900"><strong>Company:</strong> <%= @lead.company %></p>
+                <% end %>
+                <% if @lead.website.present? %>
+                  <p class="text-sm text-gray-900"><strong>Website:</strong> 
+                    <%= link_to @lead.website, @lead.website, target: "_blank", class: "text-primary hover:underline" %>
+                  </p>
+                <% end %>
+                <% if @lead.industry.present? %>
+                  <p class="text-sm text-gray-900"><strong>Industry:</strong> <%= @lead.industry %></p>
+                <% end %>
+                <% if @lead.annual_revenue.present? %>
+                  <p class="text-sm text-gray-900"><strong>Annual Revenue:</strong> <%= number_to_currency(@lead.annual_revenue) %></p>
+                <% end %>
+                <% if @lead.number_of_employees.present? %>
+                  <p class="text-sm text-gray-900"><strong>Employees:</strong> <%= @lead.number_of_employees %></p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <% if @lead.street_address.present? || @lead.city.present? %>
+            <div class="mt-6 pt-6 border-t">
+              <h4 class="text-sm font-medium text-gray-500 mb-2">Address</h4>
+              <div class="text-sm text-gray-900">
+                <% if @lead.street_address.present? %>
+                  <p><%= @lead.street_address %></p>
+                <% end %>
+                <p>
+                  <%= [@lead.city, @lead.state, @lead.postal_code].compact.join(', ') %>
+                  <% if @lead.country.present? %>
+                    <br><%= @lead.country %>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Recent Activities</h3>
+            <%= link_to "View All", "#", class: "text-primary hover:text-primary/80 text-sm" %>
+          </div>
+          
+          <% if @activities.any? %>
+            <div class="flow-root">
+              <ul class="-mb-8">
+                <% @activities.each_with_index do |activity, index| %>
+                  <li>
+                    <div class="relative pb-8">
+                      <% unless index == @activities.length - 1 %>
+                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                      <% end %>
+                      <div class="relative flex space-x-3">
+                        <div>
+                          <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                            <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                          </span>
+                        </div>
+                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                          <div>
+                            <p class="text-sm text-gray-500">
+                              <span class="font-medium text-gray-900"><%= activity.activity_type.humanize %></span>
+                              <%= activity.description %>
+                            </p>
+                          </div>
+                          <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                            <%= time_ago_in_words(activity.created_at) %> ago
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% else %>
+            <p class="text-gray-500 text-center py-4">No activities yet</p>
+          <% end %>
+        </div>
+
+        <!-- Notes -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Notes</h3>
+          </div>
+          
+          <% if @notes.any? %>
+            <div class="space-y-4">
+              <% @notes.each do |note| %>
+                <div class="border-l-4 border-blue-500 pl-4">
+                  <p class="text-sm text-gray-900"><%= note.content %></p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    By <%= note.user&.email || 'Unknown' %> • <%= time_ago_in_words(note.created_at) %> ago
+                  </p>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-500 text-center py-4">No notes yet</p>
+          <% end %>
+        </div>
+
+        <!-- Tasks -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Pending Tasks</h3>
+          </div>
+          
+          <% if @tasks.any? %>
+            <div class="space-y-3">
+              <% @tasks.each do |task| %>
+                <div class="flex items-center space-x-3 p-3 border rounded">
+                  <input type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900"><%= task.title %></p>
+                    <% if task.due_date %>
+                      <p class="text-xs text-gray-500">Due: <%= task.due_date.strftime("%B %d, %Y") %></p>
+                    <% end %>
+                  </div>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= task.priority == 'high' ? 'red' : task.priority == 'medium' ? 'yellow' : 'green' %>-100 text-<%= task.priority == 'high' ? 'red' : task.priority == 'medium' ? 'yellow' : 'green' %>-800">
+                    <%= task.priority.humanize %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-gray-500 text-center py-4">No pending tasks</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Lead Score -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Lead Score</h3>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-<%= @lead.lead_score >= 70 ? 'green' : @lead.lead_score >= 40 ? 'yellow' : 'red' %>-600 mb-2">
+              <%= @lead.lead_score %>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+              <div class="bg-<%= @lead.lead_score >= 70 ? 'green' : @lead.lead_score >= 40 ? 'yellow' : 'red' %>-500 h-3 rounded-full" style="width: <%= @lead.lead_score %>%"></div>
+            </div>
+            <p class="text-sm text-gray-500">
+              <% if @lead.lead_score >= 70 %>
+                High Quality Lead
+              <% elsif @lead.lead_score >= 40 %>
+                Medium Quality Lead
+              <% else %>
+                Low Quality Lead
+              <% end %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Lead Status -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Lead Status</h3>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Lifecycle Stage</p>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-<%= stage_color(@lead.lifecycle_stage) %>-100 text-<%= stage_color(@lead.lifecycle_stage) %>-800">
+                <%= @lead.lifecycle_stage.humanize %>
+              </span>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Current Status</p>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-<%= status_color(@lead.status) %>-100 text-<%= status_color(@lead.status) %>-800">
+                <%= @lead.status.humanize %>
+              </span>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Source</p>
+              <p class="text-sm text-gray-900"><%= @lead.source&.humanize || 'Unknown' %></p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Assigned To</p>
+              <p class="text-sm text-gray-900"><%= @lead.assigned_to&.email || 'Unassigned' %></p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Created</p>
+              <p class="text-sm text-gray-900"><%= @lead.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Last Updated</p>
+              <p class="text-sm text-gray-900"><%= @lead.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div class="space-y-3">
+            <%= link_to "Send Email", "#", class: "w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+            <%= link_to "Schedule Call", "#", class: "w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+            <%= link_to "Add Note", "#", class: "w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+            <%= link_to "Create Task", "#", class: "w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+          </div>
+        </div>
+
+        <!-- Qualification Status -->
+        <div class="bg-white shadow-sm border rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Qualification</h3>
+          <% if @lead.qualified? %>
+            <div class="text-center">
+              <div class="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <p class="text-sm text-green-600 font-medium">Qualified Lead</p>
+              <p class="text-xs text-gray-500 mt-1">Ready for conversion</p>
+            </div>
+          <% else %>
+            <div class="text-center">
+              <div class="w-12 h-12 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.864-.833-2.634 0L4.168 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+              </div>
+              <p class="text-sm text-yellow-600 font-medium">Not Yet Qualified</p>
+              <p class="text-xs text-gray-500 mt-1">Needs more nurturing</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

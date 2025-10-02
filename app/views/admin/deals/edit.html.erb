@@ -1,0 +1,172 @@
+<% content_for :title, "Edit Deal" %>
+
+<div class="container-md">
+  <!-- Page Title -->
+  <div class="flex items-center space-x-4 mb-6">
+    <%= link_to admin_deal_path(@deal.id), class: "btn-ghost text-sm py-1 px-3" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Deal
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Deal</h1>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div class="card-body">
+      <%= form_with model: [:admin, @deal], local: true, class: "space-y-6" do |form| %>
+        <%= render 'shared/error_messages', model: @deal %>
+
+        <!-- Name -->
+        <div class="mb-4">
+          <%= form.label :name, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Name<% if field_required?(@deal, :name) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :name, {
+            placeholder: "Enter name...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :name) ? { required: true } : {}) %>
+          <% if @deal.errors[:name].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:name].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <%= form.label :description, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Description<% if field_required?(@deal, :description) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_area :description, {
+            rows: 5,
+            placeholder: "Enter description...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :description) ? { required: true } : {}) %>
+          <% if @deal.errors[:description].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:description].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Amount -->
+        <div class="mb-4">
+          <%= form.label :amount, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Amount<% if field_required?(@deal, :amount) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :amount, {
+            placeholder: "Enter amount...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :amount) ? { required: true } : {}) %>
+          <% if @deal.errors[:amount].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:amount].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Stage -->
+        <div class="mb-4">
+          <%= form.label :stage, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Stage<% if field_required?(@deal, :stage) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :stage, {
+            placeholder: "Enter stage...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :stage) ? { required: true } : {}) %>
+          <% if @deal.errors[:stage].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:stage].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Probability -->
+        <div class="mb-4">
+          <%= form.label :probability, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Probability<% if field_required?(@deal, :probability) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :probability, {
+            placeholder: "Enter probability...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :probability) ? { required: true } : {}) %>
+          <% if @deal.errors[:probability].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:probability].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Expected close date -->
+        <div class="mb-4">
+          <%= form.label :expected_close_date, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Expected close date<% if field_required?(@deal, :expected_close_date) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.date_field :expected_close_date, {
+            placeholder: "Enter expected close date...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :expected_close_date) ? { required: true } : {}) %>
+          <% if @deal.errors[:expected_close_date].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:expected_close_date].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Actual close date -->
+        <div class="mb-4">
+          <%= form.label :actual_close_date, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Actual close date<% if field_required?(@deal, :actual_close_date) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.date_field :actual_close_date, {
+            placeholder: "Enter actual close date...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@deal, :actual_close_date) ? { required: true } : {}) %>
+          <% if @deal.errors[:actual_close_date].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:actual_close_date].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Contact -->
+        <div class="mb-4">
+          <%= form.label :contact_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Contact<% if field_required?(@deal, :contact) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :contact_id, 
+              options_for_select([['Select Contact', '']] + Contact.all.map { |item| [item.id, item.id] }, @deal.contact_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @deal.errors[:contact_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:contact_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- User -->
+        <div class="mb-4">
+          <%= form.label :user_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            User<% if field_required?(@deal, :user) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :user_id, 
+              options_for_select([['Select User', '']] + User.all.map { |item| [item.name, item.id] }, @deal.user_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @deal.errors[:user_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:user_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Assigned to -->
+        <div class="mb-4">
+          <%= form.label :assigned_to_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Assigned to<% if field_required?(@deal, :assigned_to) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :assigned_to_id, 
+              options_for_select([['Select Assigned to', '']] + User.all.map { |item| [item.name, item.id] }, @deal.assigned_to_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @deal.errors[:assigned_to_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @deal.errors[:assigned_to_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+          <%= link_to admin_deal_path(@deal.id), class: "btn-ghost" do %>
+            Cancel
+          <% end %>
+          <%= form.submit "Update Deal", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,311 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-heading">Contact Management</h1>
+      <p class="text-text-secondary mt-1">Manage and track all your contacts and their interactions</p>
+    </div>
+    <%= link_to new_crm_contact_path, class: "btn-primary" do %>
+      <i class="icon-user-plus mr-2"></i>
+      Add New Contact
+    <% end %>
+  </div>
+
+  <!-- Statistics Dashboard -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="card p-4">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-primary/10">
+          <i class="icon-users text-primary text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm text-text-secondary">Total Contacts</p>
+          <p class="text-2xl font-bold text-heading"><%= @total_contacts %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-success/10">
+          <i class="icon-user-check text-success text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm text-text-secondary">Customers</p>
+          <p class="text-2xl font-bold text-heading"><%= @customers %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-warning/10">
+          <i class="icon-star text-warning text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm text-text-secondary">High Score</p>
+          <p class="text-2xl font-bold text-heading"><%= @high_score_contacts %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-info/10">
+          <i class="icon-clock text-info text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm text-text-secondary">Recent (7d)</p>
+          <p class="text-2xl font-bold text-heading"><%= @recent_contacts %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4">
+      <div class="flex items-center">
+        <div class="p-3 rounded-full bg-accent/10">
+          <i class="icon-trending-up text-accent text-xl"></i>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm text-text-secondary">Avg Score</p>
+          <p class="text-2xl font-bold text-heading"><%= @avg_score %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lifecycle Stages Overview -->
+  <div class="card p-6">
+    <h3 class="text-lg font-semibold text-heading mb-4">Lifecycle Stages Distribution</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+      <% %w[subscriber lead marketing_qualified_lead sales_qualified_lead opportunity customer evangelist other].each do |stage| %>
+        <div class="text-center">
+          <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-2 
+                      <%= lifecycle_stage_color(stage) %>">
+            <span class="text-white font-bold"><%= @lifecycle_stats[stage] || 0 %></span>
+          </div>
+          <p class="text-xs text-text-secondary"><%= stage.humanize %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="card p-6">
+    <%= form_with url: crm_contacts_path, method: :get, local: true, class: "space-y-4" do |form| %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div>
+          <%= form.label :search, "Search Contacts", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.text_field :search, value: params[:search], 
+                placeholder: "Name, email, company, phone...", 
+                class: "input-field" %>
+        </div>
+
+        <!-- Lifecycle Stage Filter -->
+        <div>
+          <%= form.label :lifecycle_stage, "Lifecycle Stage", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.select :lifecycle_stage, 
+                options_for_select([
+                  ['All Stages', ''],
+                  ['Subscriber', 'subscriber'],
+                  ['Lead', 'lead'],
+                  ['Marketing Qualified Lead', 'marketing_qualified_lead'],
+                  ['Sales Qualified Lead', 'sales_qualified_lead'],
+                  ['Opportunity', 'opportunity'],
+                  ['Customer', 'customer'],
+                  ['Evangelist', 'evangelist'],
+                  ['Other', 'other']
+                ], params[:lifecycle_stage]), 
+                {}, { class: "input-field" } %>
+        </div>
+
+        <!-- User Filter -->
+        <div>
+          <%= form.label :user_id, "Owner", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.select :user_id, 
+                options_for_select([['All Users', '']] + @users.map { |u| [u.email, u.id] }, params[:user_id]), 
+                {}, { class: "input-field" } %>
+        </div>
+
+        <!-- Sort Options -->
+        <div>
+          <%= form.label :sort, "Sort By", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.select :sort, 
+                options_for_select([
+                  ['Recently Created', 'created_desc'],
+                  ['Oldest First', 'created_asc'],
+                  ['Name A-Z', 'name_asc'],
+                  ['Name Z-A', 'name_desc'],
+                  ['Highest Score', 'score_desc'],
+                  ['Lowest Score', 'score_asc'],
+                  ['Last Activity', 'last_activity']
+                ], params[:sort]), 
+                {}, { class: "input-field" } %>
+        </div>
+      </div>
+
+      <!-- Score Range Filters -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= form.label :min_score, "Minimum Score", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.number_field :min_score, value: params[:min_score], 
+                min: 0, max: 100, placeholder: "0", class: "input-field" %>
+        </div>
+        <div>
+          <%= form.label :max_score, "Maximum Score", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.number_field :max_score, value: params[:max_score], 
+                min: 0, max: 100, placeholder: "100", class: "input-field" %>
+        </div>
+      </div>
+
+      <!-- Filter Actions -->
+      <div class="flex flex-wrap gap-3">
+        <%= form.submit "Apply Filters", class: "btn-primary" %>
+        <%= link_to "Clear Filters", crm_contacts_path, class: "btn-secondary" %>
+        <span class="text-sm text-text-secondary flex items-center">
+          <i class="icon-filter mr-1"></i>
+          Showing <%= @contacts.count %> of <%= @total_contacts %> contacts
+        </span>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Contacts Table -->
+  <div class="card overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-surface-secondary border-b border-border">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Contact</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Company</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Stage</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Score</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Deals</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Last Activity</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-surface divide-y divide-border">
+          <% @contacts.each do |contact| %>
+            <tr class="hover:bg-surface-secondary transition-colors duration-200">
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span class="text-primary font-semibold text-sm">
+                      <%= contact.first_name.first.upcase if contact.first_name.present? %>
+                    </span>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-heading">
+                      <%= link_to contact.display_name, crm_contact_path(contact), class: "hover:text-primary" %>
+                    </div>
+                    <div class="text-sm text-text-secondary"><%= contact.email %></div>
+                    <% if contact.phone.present? %>
+                      <div class="text-xs text-text-secondary">
+                        <i class="icon-phone mr-1"></i><%= contact.phone %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-heading"><%= contact.company if contact.company.present? %></div>
+                <div class="text-sm text-text-secondary"><%= contact.job_title if contact.job_title.present? %></div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                           <%= lifecycle_stage_color(contact.lifecycle_stage) %>">
+                  <%= contact.lifecycle_stage.humanize %>
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="flex-1 bg-surface-secondary rounded-full h-2 mr-2">
+                    <div class="h-full rounded-full transition-all duration-300
+                               <%= contact.contact_score >= 70 ? 'bg-success' : contact.contact_score >= 40 ? 'bg-warning' : 'bg-error' %>"
+                         style="width: <%= contact.contact_score %>%"></div>
+                  </div>
+                  <span class="text-sm font-medium text-heading"><%= contact.contact_score %></span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-heading">
+                  <%= pluralize(contact.active_deals_count, 'active deal') %>
+                </div>
+                <% if contact.total_deal_value > 0 %>
+                  <div class="text-xs text-success">$<%= number_with_delimiter(contact.total_deal_value) %> closed</div>
+                <% end %>
+              </td>
+              <td class="px-6 py-4">
+                <% if contact.last_activity %>
+                  <div class="text-sm text-heading">
+                    <%= time_ago_in_words(contact.last_activity.activity_date) %> ago
+                  </div>
+                  <div class="text-xs text-text-secondary">
+                    <%= contact.last_activity.activity_type.humanize %>
+                  </div>
+                <% else %>
+                  <span class="text-sm text-text-secondary">No activity</span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <%= link_to crm_contact_path(contact), class: "text-primary hover:text-primary-dark", title: "View Contact" do %>
+                    <i class="icon-eye"></i>
+                  <% end %>
+                  <%= link_to edit_crm_contact_path(contact), class: "text-accent hover:text-accent-dark", title: "Edit Contact" do %>
+                    <i class="icon-edit"></i>
+                  <% end %>
+                  <%= link_to crm_contact_path(contact), method: :delete, 
+                        class: "text-error hover:text-error-dark", title: "Delete Contact",
+                        data: { confirm: "Are you sure you want to delete this contact?" } do %>
+                    <i class="icon-trash"></i>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <% if @contacts.respond_to?(:total_pages) && @contacts.total_pages > 1 %>
+      <div class="px-6 py-4 border-t border-border">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-text-secondary">
+            Showing <%= @contacts.offset_value + 1 %> to <%= [@contacts.offset_value + @contacts.limit_value, @contacts.total_count].min %> 
+            of <%= @contacts.total_count %> contacts
+          </div>
+          <div class="flex space-x-2">
+            <%= paginate @contacts, theme: 'twitter_bootstrap_4' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Empty State -->
+  <% if @contacts.empty? %>
+    <div class="card p-12 text-center">
+      <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-surface-secondary flex items-center justify-center">
+        <i class="icon-users text-text-secondary text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-heading mb-2">No contacts found</h3>
+      <p class="text-text-secondary mb-6">
+        <% if params[:search].present? || params[:lifecycle_stage].present? %>
+          Try adjusting your filters or search terms.
+        <% else %>
+          Get started by adding your first contact to the system.
+        <% end %>
+      </p>
+      <% unless params[:search].present? || params[:lifecycle_stage].present? %>
+        <%= link_to new_crm_contact_path, class: "btn-primary" do %>
+          <i class="icon-user-plus mr-2"></i>
+          Add Your First Contact
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

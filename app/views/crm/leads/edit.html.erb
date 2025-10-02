@@ -1,0 +1,224 @@
+<div class="bg-background text-foreground min-h-screen">
+  <!-- Header -->
+  <div class="bg-white border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Edit Lead</h1>
+            <p class="mt-1 text-sm text-gray-500">Update lead information and scoring</p>
+          </div>
+          <div class="flex space-x-3">
+            <%= link_to "View Lead", crm_lead_path(@lead), class: "bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+            <%= link_to "Back to Leads", crm_leads_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow-sm border rounded-lg">
+      <div class="px-6 py-8">
+        <%= form_with model: [:crm, @lead], local: true, class: "space-y-8" do |form| %>
+          <%= render 'shared/error_messages', model: @lead %>
+
+          <!-- Basic Information -->
+          <div class="border-b border-gray-200 pb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Basic Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <%= form.label :first_name, "First Name *", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_field :first_name, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :last_name, "Last Name *", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_field :last_name, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :email, "Email *", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.email_field :email, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :phone, "Phone", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.telephone_field :phone, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Company Information -->
+          <div class="border-b border-gray-200 pb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Company Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <%= form.label :company, "Company", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_field :company, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :website, "Website", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.url_field :website, placeholder: "https://", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :job_title, "Job Title", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_field :job_title, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :industry, "Industry", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_field :industry, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :annual_revenue, "Annual Revenue", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.number_field :annual_revenue, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div>
+                <%= form.label :number_of_employees, "Number of Employees", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.number_field :number_of_employees, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lead Management -->
+          <div class="border-b border-gray-200 pb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Lead Management</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <%= form.label :lifecycle_stage, "Lifecycle Stage", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.select :lifecycle_stage, 
+                    options_for_select([
+                      ['Subscriber', 'subscriber'],
+                      ['Lead', 'lead'],
+                      ['Marketing Qualified Lead', 'marketing_qualified_lead'],
+                      ['Sales Qualified Lead', 'sales_qualified_lead'],
+                      ['Opportunity', 'opportunity'],
+                      ['Customer', 'customer'],
+                      ['Evangelist', 'evangelist'],
+                      ['Other', 'other']
+                    ], @lead.lifecycle_stage),
+                    {},
+                    { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+              </div>
+
+              <div>
+                <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.select :status, 
+                    options_for_select([
+                      ['New', 'new'],
+                      ['In Progress', 'in_progress'],
+                      ['Contacted', 'contacted'],
+                      ['Qualified', 'qualified'],
+                      ['Unqualified', 'unqualified']
+                    ], @lead.status),
+                    {},
+                    { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+              </div>
+
+              <div>
+                <%= form.label :source, "Source", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.select :source, 
+                    options_for_select([
+                      ['Website', 'website'],
+                      ['Social Media', 'social_media'],
+                      ['Email', 'email'],
+                      ['Referral', 'referral'],
+                      ['Advertising', 'advertising'],
+                      ['Direct', 'direct'],
+                      ['Other', 'other']
+                    ], @lead.source),
+                    {},
+                    { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div>
+                <%= form.label :assigned_to_id, "Assigned To", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.select :assigned_to_id, 
+                    options_for_select([['Unassigned', '']] + @users.map { |u| [u.email, u.id] }, @lead.assigned_to_id),
+                    {},
+                    { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+              </div>
+
+              <div>
+                <%= form.label :lead_score, "Lead Score (0-100)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.number_field :lead_score, min: 0, max: 100, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+                <p class="mt-1 text-xs text-gray-500">Score will be recalculated based on updated information</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Information -->
+          <div class="border-b border-gray-200 pb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Address Information</h3>
+            <div class="grid grid-cols-1 gap-6">
+              <div>
+                <%= form.label :street_address, "Street Address", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <%= form.text_area :street_address, rows: 2, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                  <%= form.label :city, "City", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <%= form.text_field :city, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+                </div>
+
+                <div>
+                  <%= form.label :state, "State/Province", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <%= form.text_field :state, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+                </div>
+
+                <div>
+                  <%= form.label :postal_code, "Postal Code", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <%= form.text_field :postal_code, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+                </div>
+
+                <div>
+                  <%= form.label :country, "Country", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <%= form.text_field :country, class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Score Info -->
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-blue-900 mb-4">Current Lead Score: <%= @lead.lead_score %></h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h4 class="font-medium text-blue-800 mb-2">Score Factors:</h4>
+                <ul class="space-y-1 text-blue-700">
+                  <li>• Email provided: +10 points</li>
+                  <li>• Phone provided: +15 points</li>
+                  <li>• Company provided: +20 points</li>
+                  <li>• Website provided: +10 points</li>
+                  <li>• Recent activity: +10 points</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-blue-800 mb-2">Source Bonuses:</h4>
+                <ul class="space-y-1 text-blue-700">
+                  <li>• Referral: +25 points</li>
+                  <li>• Website/Social: +15 points</li>
+                  <li>• Advertising: +10 points</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end space-x-4">
+            <%= link_to "Cancel", crm_lead_path(@lead), class: "bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md font-medium transition-colors" %>
+            <%= form.submit "Update Lead", class: "bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

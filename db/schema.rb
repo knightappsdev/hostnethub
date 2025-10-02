@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_02_162823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,23 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "activities", force: :cascade do |t|
+    t.string "activity_type"
+    t.string "title"
+    t.text "description"
+    t.datetime "activity_date"
+    t.bigint "contact_id"
+    t.bigint "lead_id"
+    t.bigint "deal_id"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id"], name: "index_activities_on_contact_id"
+    t.index ["deal_id"], name: "index_activities_on_deal_id"
+    t.index ["lead_id"], name: "index_activities_on_lead_id"
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
   create_table "admin_oplogs", force: :cascade do |t|
     t.bigint "administrator_id", null: false
     t.string "action"
@@ -67,6 +84,50 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
     t.boolean "first_login", default: true
     t.index ["name"], name: "index_administrators_on_name", unique: true
     t.index ["role"], name: "index_administrators_on_role"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.string "company"
+    t.string "job_title"
+    t.string "lifecycle_stage"
+    t.integer "contact_score"
+    t.text "notes"
+    t.bigint "user_id"
+    t.bigint "lead_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "website"
+    t.string "address"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "country"
+    t.string "source"
+    t.text "description"
+    t.index ["lead_id"], name: "index_contacts_on_lead_id"
+    t.index ["user_id"], name: "index_contacts_on_user_id"
+  end
+
+  create_table "deals", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.decimal "amount"
+    t.string "stage"
+    t.integer "probability"
+    t.date "expected_close_date"
+    t.date "actual_close_date"
+    t.bigint "contact_id", null: false
+    t.bigint "user_id"
+    t.bigint "assigned_to_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_to_id"], name: "index_deals_on_assigned_to_id"
+    t.index ["contact_id"], name: "index_deals_on_contact_id"
+    t.index ["user_id"], name: "index_deals_on_user_id"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -176,6 +237,48 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "leads", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.string "company"
+    t.string "website"
+    t.string "source"
+    t.string "status"
+    t.string "lifecycle_stage"
+    t.integer "lead_score"
+    t.bigint "assigned_to_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "job_title"
+    t.string "industry"
+    t.decimal "annual_revenue"
+    t.integer "number_of_employees"
+    t.text "street_address"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "country"
+    t.index ["assigned_to_id"], name: "index_leads_on_assigned_to_id"
+    t.index ["user_id"], name: "index_leads_on_user_id"
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.text "content"
+    t.bigint "contact_id"
+    t.bigint "lead_id"
+    t.bigint "deal_id"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id"], name: "index_notes_on_contact_id"
+    t.index ["deal_id"], name: "index_notes_on_deal_id"
+    t.index ["lead_id"], name: "index_notes_on_lead_id"
+    t.index ["user_id"], name: "index_notes_on_user_id"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.string "customer_name"
     t.string "customer_email"
@@ -199,6 +302,26 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "due_date"
+    t.string "priority"
+    t.string "status"
+    t.bigint "contact_id"
+    t.bigint "lead_id"
+    t.bigint "deal_id"
+    t.bigint "user_id", null: false
+    t.bigint "assigned_to_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_to_id"], name: "index_tasks_on_assigned_to_id"
+    t.index ["contact_id"], name: "index_tasks_on_contact_id"
+    t.index ["deal_id"], name: "index_tasks_on_deal_id"
+    t.index ["lead_id"], name: "index_tasks_on_lead_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email", null: false
@@ -213,7 +336,27 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_02_144509) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activities", "contacts"
+  add_foreign_key "activities", "deals"
+  add_foreign_key "activities", "leads"
+  add_foreign_key "activities", "users"
   add_foreign_key "admin_oplogs", "administrators"
+  add_foreign_key "contacts", "leads"
+  add_foreign_key "contacts", "users"
+  add_foreign_key "deals", "contacts"
+  add_foreign_key "deals", "users"
+  add_foreign_key "deals", "users", column: "assigned_to_id"
+  add_foreign_key "leads", "users"
+  add_foreign_key "leads", "users", column: "assigned_to_id"
+  add_foreign_key "notes", "contacts"
+  add_foreign_key "notes", "deals"
+  add_foreign_key "notes", "leads"
+  add_foreign_key "notes", "users"
   add_foreign_key "orders", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "tasks", "contacts"
+  add_foreign_key "tasks", "deals"
+  add_foreign_key "tasks", "leads"
+  add_foreign_key "tasks", "users"
+  add_foreign_key "tasks", "users", column: "assigned_to_id"
 end

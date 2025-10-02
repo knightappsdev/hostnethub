@@ -1,0 +1,260 @@
+<div class="bg-background text-foreground min-h-screen">
+  <!-- CRM Dashboard Header -->
+  <div class="bg-white border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">CRM Dashboard</h1>
+            <p class="mt-1 text-sm text-gray-500">Manage your sales pipeline and customer relationships</p>
+          </div>
+          <div class="flex space-x-3">
+            <%= link_to "Add Lead", new_crm_lead_path, class: "bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+            <%= link_to "Add Contact", new_crm_contact_path, class: "bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Key Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Leads</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= number_with_delimiter(@total_leads) %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Contacts</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= number_with_delimiter(@total_contacts) %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Active Deals</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= number_with_delimiter(@total_deals) %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= number_to_currency(@total_revenue) %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Lead Pipeline Visualization -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Lead Pipeline</h3>
+        <div class="space-y-4">
+          <% @pipeline_stages.each do |stage, count| %>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full bg-<%= stage_color(stage) %>-500"></div>
+                <span class="text-sm font-medium text-gray-700"><%= stage %></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-semibold text-gray-900"><%= count %></span>
+                <div class="w-24 bg-gray-200 rounded-full h-2">
+                  <div class="bg-<%= stage_color(stage) %>-500 h-2 rounded-full" style="width: <%= @total_leads > 0 ? (count.to_f / @total_leads * 100).round(1) : 0 %>%"></div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Deal Value Pipeline -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Deal Value Pipeline</h3>
+        <div class="space-y-4">
+          <% total_deal_value = @deal_pipeline.values.sum %>
+          <% @deal_pipeline.each do |stage, value| %>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full bg-<%= stage_color(stage) %>-500"></div>
+                <span class="text-sm font-medium text-gray-700"><%= stage %></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-semibold text-gray-900"><%= number_to_currency(value) %></span>
+                <div class="w-24 bg-gray-200 rounded-full h-2">
+                  <div class="bg-<%= stage_color(stage) %>-500 h-2 rounded-full" style="width: <%= total_deal_value > 0 ? (value.to_f / total_deal_value * 100).round(1) : 0 %>%"></div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Recent Activities -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h3>
+        <div class="space-y-4">
+          <% if @recent_activities.any? %>
+            <% @recent_activities.each do |activity| %>
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm text-gray-900">
+                    <span class="font-medium"><%= activity.activity_type.titleize %></span>
+                    for <span class="font-medium"><%= activity.lead.name %></span>
+                  </p>
+                  <p class="text-xs text-gray-500"><%= time_ago_in_words(activity.created_at) %> ago</p>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No recent activities</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Top Performing Leads -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Performing Leads</h3>
+        <div class="space-y-4">
+          <% if @top_leads.any? %>
+            <% @top_leads.each do |lead| %>
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-900"><%= lead.name %></p>
+                  <p class="text-xs text-gray-500"><%= lead.company %></p>
+                </div>
+                <div class="text-right">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm font-medium text-gray-900">Score: <%= lead.score %></span>
+                    <div class="w-12 bg-gray-200 rounded-full h-2">
+                      <div class="bg-green-500 h-2 rounded-full" style="width: <%= lead.score %>%"></div>
+                    </div>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-1"><%= lead.stage.titleize %></p>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No high-scoring leads yet</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Tasks Due Today -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Tasks Due Today</h3>
+        <div class="space-y-4">
+          <% if @tasks_due_today.any? %>
+            <% @tasks_due_today.each do |task| %>
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <input type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-offset-0">
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm text-gray-900"><%= task.title %></p>
+                  <p class="text-xs text-gray-500">
+                    Due: <%= task.due_date.strftime("%B %d, %Y") %>
+                    • Lead: <%= task.lead.name %>
+                  </p>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No tasks due today</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversion Rates -->
+    <div class="mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversion Rates</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <% @conversion_rates.each do |conversion_type, rate| %>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900"><%= rate %>%</div>
+              <div class="text-sm text-gray-500"><%= conversion_type %></div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div class="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full" style="width: <%= rate %>%"></div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Lead Generation Trend</h3>
+        <%= line_chart @monthly_leads, suffix: " leads", height: "300px", colors: ["#3B82F6"] %>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
+        <%= line_chart @monthly_revenue, prefix: "$", height: "300px", colors: ["#10B981"] %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :head do %>
+  <%= javascript_include_tag "chartkick", "Chart.bundle" %>
+<% end %>

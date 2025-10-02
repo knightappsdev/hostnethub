@@ -1,0 +1,285 @@
+<div class="bg-background text-foreground min-h-screen">
+  <!-- Header -->
+  <div class="bg-white border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Lead Management</h1>
+            <p class="mt-1 text-sm text-gray-500">Manage leads with scoring and lifecycle stages</p>
+          </div>
+          <div class="flex space-x-3">
+            <%= link_to "New Lead", new_crm_lead_path, class: "bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+            <%= link_to "CRM Dashboard", crm_dashboards_path, class: "bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Filters -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border mb-8">
+      <%= form_with url: crm_leads_path, method: :get, local: true, class: "space-y-4" do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Search -->
+          <div>
+            <%= form.label :search, "Search", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.text_field :search, value: params[:search], placeholder: "Name, email, company...", class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.select :status, 
+                options_for_select([['All Statuses', '']] + @status_options.map { |s| [s.humanize, s] }, params[:status]),
+                {}, { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+          </div>
+
+          <!-- Lifecycle Stage Filter -->
+          <div>
+            <%= form.label :lifecycle_stage, "Lifecycle Stage", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.select :lifecycle_stage, 
+                options_for_select([['All Stages', '']] + @lifecycle_stage_options.map { |s| [s.humanize, s] }, params[:lifecycle_stage]),
+                {}, { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+          </div>
+
+          <!-- Sort -->
+          <div>
+            <%= form.label :sort, "Sort By", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.select :sort, 
+                options_for_select([
+                  ['Most Recent', ''],
+                  ['Score (High to Low)', 'score_desc'],
+                  ['Score (Low to High)', 'score_asc'],
+                  ['Name', 'name'],
+                  ['Company', 'company']
+                ], params[:sort]),
+                {}, { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Score Range -->
+          <div class="grid grid-cols-2 gap-2">
+            <%= form.label :min_score, "Min Score", class: "block text-sm font-medium text-gray-700 mb-1 col-span-2" %>
+            <%= form.number_field :min_score, value: params[:min_score], placeholder: "0", min: 0, max: 100, class: "px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+            <%= form.number_field :max_score, value: params[:max_score], placeholder: "100", min: 0, max: 100, class: "px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" %>
+          </div>
+
+          <!-- Assigned User Filter -->
+          <div>
+            <%= form.label :assigned_to_id, "Assigned To", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.select :assigned_to_id, 
+                options_for_select([['All Users', '']] + @assigned_users.map { |u| [u.email, u.id] }, params[:assigned_to_id]),
+                {}, { class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" } %>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-end space-x-2">
+            <%= form.submit "Filter", class: "bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+            <%= link_to "Clear", crm_leads_path, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md font-medium transition-colors" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Leads</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= @leads.total_count %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Qualified Leads</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= Lead.where(lifecycle_stage: ['marketing_qualified_lead', 'sales_qualified_lead']).count %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">High Score (70+)</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= Lead.high_score.count %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Avg Score</dt>
+              <dd class="text-lg font-semibold text-gray-900"><%= Lead.average(:lead_score)&.round(1) || 0 %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leads Table -->
+    <div class="bg-white shadow-sm border rounded-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lead</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stage</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @leads.each do |lead| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                      <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                        <span class="text-sm font-medium text-gray-700"><%= lead.first_name[0] + lead.last_name[0] %></span>
+                      </div>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">
+                        <%= link_to lead.full_name, crm_lead_path(lead), class: "hover:text-primary" %>
+                      </div>
+                      <div class="text-sm text-gray-500"><%= lead.email %></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900"><%= lead.company %></div>
+                  <div class="text-sm text-gray-500"><%= lead.job_title %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="text-sm font-medium text-gray-900 mr-2"><%= lead.lead_score %></div>
+                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                      <div class="bg-<%= lead.lead_score >= 70 ? 'green' : lead.lead_score >= 40 ? 'yellow' : 'red' %>-500 h-2 rounded-full" style="width: <%= lead.lead_score %>%"></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= stage_color(lead.lifecycle_stage) %>-100 text-<%= stage_color(lead.lifecycle_stage) %>-800">
+                    <%= lead.lifecycle_stage.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= status_color(lead.status) %>-100 text-<%= status_color(lead.status) %>-800">
+                    <%= lead.status.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= lead.assigned_to&.email || 'Unassigned' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= lead.created_at.strftime("%b %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex items-center justify-end space-x-2">
+                    <%= link_to "View", crm_lead_path(lead), class: "text-primary hover:text-primary/80" %>
+                    <%= link_to "Edit", edit_crm_lead_path(lead), class: "text-blue-600 hover:text-blue-500" %>
+                    <% if lead.qualified? %>
+                      <%= link_to "Convert", convert_to_contact_crm_lead_path(lead), method: :post, 
+                          confirm: "Are you sure you want to convert this lead to a contact?",
+                          class: "text-green-600 hover:text-green-500" %>
+                    <% end %>
+                    <%= link_to "Delete", crm_lead_path(lead), method: :delete, 
+                        confirm: "Are you sure you want to delete this lead?",
+                        class: "text-red-600 hover:text-red-500" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <% if @leads.respond_to?(:current_page) %>
+        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+          <div class="flex items-center justify-between">
+            <div class="flex justify-between flex-1 sm:hidden">
+              <%= paginate @leads, theme: 'twitter-bootstrap-3' %>
+            </div>
+            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  Showing
+                  <span class="font-medium"><%= @leads.offset_value + 1 %></span>
+                  to
+                  <span class="font-medium"><%= [@leads.offset_value + @leads.limit_value, @leads.total_count].min %></span>
+                  of
+                  <span class="font-medium"><%= @leads.total_count %></span>
+                  results
+                </p>
+              </div>
+              <div>
+                <%= paginate @leads, theme: 'twitter-bootstrap-3' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @leads.empty? %>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No leads found</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new lead.</p>
+        <div class="mt-6">
+          <%= link_to "New Lead", new_crm_lead_path, class: "bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

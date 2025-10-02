@@ -1,0 +1,172 @@
+<% content_for :title, "Edit Task" %>
+
+<div class="container-md">
+  <!-- Page Title -->
+  <div class="flex items-center space-x-4 mb-6">
+    <%= link_to admin_task_path(@task.id), class: "btn-ghost text-sm py-1 px-3" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Task
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Task</h1>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div class="card-body">
+      <%= form_with model: [:admin, @task], local: true, class: "space-y-6" do |form| %>
+        <%= render 'shared/error_messages', model: @task %>
+
+        <!-- Title -->
+        <div class="mb-4">
+          <%= form.label :title, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Title<% if field_required?(@task, :title) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :title, {
+            placeholder: "Enter title...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@task, :title) ? { required: true } : {}) %>
+          <% if @task.errors[:title].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:title].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <%= form.label :description, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Description<% if field_required?(@task, :description) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_area :description, {
+            rows: 5,
+            placeholder: "Enter description...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@task, :description) ? { required: true } : {}) %>
+          <% if @task.errors[:description].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:description].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Due date -->
+        <div class="mb-4">
+          <%= form.label :due_date, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Due date<% if field_required?(@task, :due_date) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.datetime_local_field :due_date, {
+            placeholder: "Enter due date...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@task, :due_date) ? { required: true } : {}) %>
+          <% if @task.errors[:due_date].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:due_date].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Priority -->
+        <div class="mb-4">
+          <%= form.label :priority, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Priority<% if field_required?(@task, :priority) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :priority, {
+            placeholder: "Enter priority...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@task, :priority) ? { required: true } : {}) %>
+          <% if @task.errors[:priority].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:priority].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-4">
+          <%= form.label :status, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Status<% if field_required?(@task, :status) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :status, {
+            placeholder: "Enter status...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@task, :status) ? { required: true } : {}) %>
+          <% if @task.errors[:status].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:status].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Contact -->
+        <div class="mb-4">
+          <%= form.label :contact_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Contact<% if field_required?(@task, :contact) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :contact_id, 
+              options_for_select([['Select Contact', '']] + Contact.all.map { |item| [item.id, item.id] }, @task.contact_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @task.errors[:contact_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:contact_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Lead -->
+        <div class="mb-4">
+          <%= form.label :lead_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Lead<% if field_required?(@task, :lead) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :lead_id, 
+              options_for_select([['Select Lead', '']] + Lead.all.map { |item| [item.id, item.id] }, @task.lead_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @task.errors[:lead_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:lead_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Deal -->
+        <div class="mb-4">
+          <%= form.label :deal_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Deal<% if field_required?(@task, :deal) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :deal_id, 
+              options_for_select([['Select Deal', '']] + Deal.all.map { |item| [item.name, item.id] }, @task.deal_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @task.errors[:deal_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:deal_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- User -->
+        <div class="mb-4">
+          <%= form.label :user_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            User<% if field_required?(@task, :user) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :user_id, 
+              options_for_select([['Select User', '']] + User.all.map { |item| [item.name, item.id] }, @task.user_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @task.errors[:user_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:user_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Assigned to -->
+        <div class="mb-4">
+          <%= form.label :assigned_to_id, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Assigned to<% if field_required?(@task, :assigned_to) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.select :assigned_to_id, 
+              options_for_select([['Select Assigned to', '']] + User.all.map { |item| [item.name, item.id] }, @task.assigned_to_id),
+              {},
+              { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white" } %>
+          <% if @task.errors[:assigned_to_id].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @task.errors[:assigned_to_id].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+          <%= link_to admin_task_path(@task.id), class: "btn-ghost" do %>
+            Cancel
+          <% end %>
+          <%= form.submit "Update Task", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

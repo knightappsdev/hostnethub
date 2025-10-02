@@ -1,0 +1,189 @@
+<div class="max-w-4xl mx-auto p-6">
+  <!-- Header -->
+  <div class="flex items-center mb-6">
+    <%= link_to crm_contacts_path, class: "text-text-secondary hover:text-primary mr-4" do %>
+      <i class="icon-arrow-left text-lg"></i>
+    <% end %>
+    <div>
+      <h1 class="text-3xl font-bold text-heading">Add New Contact</h1>
+      <p class="text-text-secondary mt-1">Create a new contact record in your CRM system</p>
+    </div>
+  </div>
+
+  <div class="card p-6">
+    <%= render 'shared/error_messages', model: @contact %>
+    
+    <%= form_with model: [:crm, @contact], local: true, class: "space-y-6" do |form| %>
+      <!-- Basic Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-heading mb-4">Basic Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= form.label :first_name, "First Name *", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :first_name, class: "input-field", required: true %>
+          </div>
+          
+          <div>
+            <%= form.label :last_name, "Last Name *", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :last_name, class: "input-field", required: true %>
+          </div>
+          
+          <div>
+            <%= form.label :email, "Email Address *", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.email_field :email, class: "input-field", required: true %>
+          </div>
+          
+          <div>
+            <%= form.label :phone, "Phone Number", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.telephone_field :phone, class: "input-field" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Company Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-heading mb-4">Company Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= form.label :company, "Company", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :company, class: "input-field" %>
+          </div>
+          
+          <div>
+            <%= form.label :job_title, "Job Title", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :job_title, class: "input-field" %>
+          </div>
+          
+          <div class="md:col-span-2">
+            <%= form.label :website, "Website", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.url_field :website, class: "input-field", placeholder: "https://example.com" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Management -->
+      <div>
+        <h3 class="text-lg font-semibold text-heading mb-4">Contact Management</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <%= form.label :lifecycle_stage, "Lifecycle Stage", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.select :lifecycle_stage, [
+                  ['Subscriber', 'subscriber'],
+                  ['Lead', 'lead'],
+                  ['Marketing Qualified Lead', 'marketing_qualified_lead'],
+                  ['Sales Qualified Lead', 'sales_qualified_lead'],
+                  ['Opportunity', 'opportunity'],
+                  ['Customer', 'customer'],
+                  ['Evangelist', 'evangelist'],
+                  ['Other', 'other']
+                ], {}, { class: "input-field" } %>
+          </div>
+          
+          <div>
+            <%= form.label :source, "Source", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.select :source, [
+                  ['Website', 'website'],
+                  ['Referral', 'referral'],
+                  ['Social Media', 'social_media'],
+                  ['Email Campaign', 'email_campaign'],
+                  ['Trade Show', 'trade_show'],
+                  ['Cold Call', 'cold_call'],
+                  ['Advertisement', 'advertisement'],
+                  ['Partner', 'partner'],
+                  ['Other', 'other']
+                ], { include_blank: 'Select source...' }, { class: "input-field" } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-heading mb-4">Address Information</h3>
+        <div class="space-y-4">
+          <div>
+            <%= form.label :address, "Street Address", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :address, class: "input-field" %>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <%= form.label :city, "City", class: "block text-sm font-medium text-heading mb-1" %>
+              <%= form.text_field :city, class: "input-field" %>
+            </div>
+            
+            <div>
+              <%= form.label :state, "State/Province", class: "block text-sm font-medium text-heading mb-1" %>
+              <%= form.text_field :state, class: "input-field" %>
+            </div>
+            
+            <div>
+              <%= form.label :postal_code, "Postal Code", class: "block text-sm font-medium text-heading mb-1" %>
+              <%= form.text_field :postal_code, class: "input-field" %>
+            </div>
+          </div>
+          
+          <div>
+            <%= form.label :country, "Country", class: "block text-sm font-medium text-heading mb-1" %>
+            <%= form.text_field :country, class: "input-field" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-heading mb-4">Additional Information</h3>
+        <div>
+          <%= form.label :description, "Description", class: "block text-sm font-medium text-heading mb-1" %>
+          <%= form.text_area :description, rows: 4, class: "input-field", 
+                placeholder: "Add any additional notes or information about this contact..." %>
+        </div>
+      </div>
+
+      <!-- Lead Association (if coming from lead conversion) -->
+      <% if params[:lead_id] %>
+        <%= form.hidden_field :lead_id, value: params[:lead_id] %>
+        <div class="bg-info/10 border border-info/20 rounded-lg p-4">
+          <div class="flex items-center">
+            <i class="icon-info-circle text-info mr-2"></i>
+            <p class="text-info">
+              This contact is being created from a lead conversion. The original lead will be linked to this contact.
+            </p>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 pt-6 border-t border-border">
+        <%= link_to crm_contacts_path, class: "btn-secondary" do %>
+          Cancel
+        <% end %>
+        <%= form.submit "Create Contact", class: "btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Help Section -->
+  <div class="card p-6 mt-6 bg-surface-secondary">
+    <h3 class="text-lg font-semibold text-heading mb-3">Contact Management Tips</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-text-secondary">
+      <div>
+        <h4 class="font-medium text-heading mb-2">Lifecycle Stages</h4>
+        <ul class="space-y-1">
+          <li><strong>Subscriber:</strong> Someone who has subscribed to your content</li>
+          <li><strong>Lead:</strong> A potential customer showing initial interest</li>
+          <li><strong>Marketing Qualified Lead:</strong> Lead that meets marketing criteria</li>
+          <li><strong>Sales Qualified Lead:</strong> Lead ready for sales contact</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-medium text-heading mb-2">Best Practices</h4>
+        <ul class="space-y-1">
+          <li>• Always include first name, last name, and email</li>
+          <li>• Add company information when available</li>
+          <li>• Select the most appropriate lifecycle stage</li>
+          <li>• Track the source of the contact for attribution</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,19 @@ class User < ApplicationRecord
 
   has_many :sessions, dependent: :destroy
   has_many :orders, dependent: :destroy
+  
+  # CRM associations
+  has_many :leads, dependent: :destroy
+  has_many :contacts, dependent: :destroy
+  has_many :deals, dependent: :destroy
+  has_many :activities, dependent: :destroy
+  has_many :notes, dependent: :destroy
+  has_many :tasks, dependent: :destroy
+  
+  # CRM assignments
+  has_many :assigned_leads, class_name: 'Lead', foreign_key: 'assigned_to_id', dependent: :nullify
+  has_many :assigned_deals, class_name: 'Deal', foreign_key: 'assigned_to_id', dependent: :nullify
+  has_many :assigned_tasks, class_name: 'Task', foreign_key: 'assigned_to_id', dependent: :nullify
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 

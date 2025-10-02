@@ -47,3 +47,7 @@ gem "omniauth-google-oauth2"
 gem "omniauth-facebook"
 gem "omniauth-twitter2"
 gem "omniauth-github"
+
+# Analytics and Charts
+gem 'chartkick', '~> 5.0'
+gem 'groupdate', '~> 6.4'
