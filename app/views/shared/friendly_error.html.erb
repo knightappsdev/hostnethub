@@ -1,0 +1,143 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="container-md w-full mx-auto text-center py-2">
+    <!-- Dynamic Icon -->
+    <div class="mx-auto mb-8 w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center">
+      <svg class="w-12 h-12 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+      </svg>
+    </div>
+
+    <!-- Dynamic Title -->
+    <h1 class="text-5xl font-bold mb-4 text-gray-900"><%= @error_title %></h1>
+    <p class="text-lg mb-8 text-gray-600"><%= @error_description %></p>
+
+    <% if Rails.env.development? && @original_exception %>
+      <!-- Development Info -->
+      <div class="mb-8 text-left">
+        <div class="card shadow-lg">
+          <div class="card-body">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-medium text-gray-900">Development Debug Info</h3>
+              <button type="button" onclick="copyErrorDetails()" class="border border-blue-600 text-blue-600 hover:bg-blue-50 font-medium py-1 px-3 rounded text-sm transition-colors" id="copy-btn">
+                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Copy Error
+              </button>
+            </div>
+
+            <div class="bg-gray-100 rounded-lg">
+              <details class="group">
+                <summary class="cursor-pointer p-4 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors">
+                  <span class="inline-flex items-center">
+                    Click to view error details
+                  </span>
+                </summary>
+                <div class="p-4 border-t border-gray-200">
+                  <div class="bg-gray-800 text-white rounded-lg p-4 font-mono text-sm" id="error-details">
+                    <div class="mb-2">
+                      <span class="font-semibold text-blue-400">URL:</span> <%= @error_url %>
+                    </div>
+                    <div class="mb-4">
+                      <span class="font-semibold text-red-400">Message:</span>
+                      <div class="mt-1 bg-gray-900 p-2 rounded text-xs break-all">
+                        <%= @original_exception.message %>
+                      </div>
+                    </div>
+
+                    <% if @filtered_backtrace&.any? %>
+                      <div class="mb-2">
+                        <span class="font-semibold text-yellow-400">User Code Stack Trace:</span>
+                      </div>
+                      <div class="bg-gray-900 rounded p-2 text-xs overflow-x-auto">
+                        <% @filtered_backtrace.each_with_index do |line, index| %>
+                          <div class="mb-1">
+                            <span class="text-blue-400 font-semibold"><%= index + 1 %>:</span>
+                            <span class="text-gray-300"><%= line %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% elsif @original_exception&.backtrace %>
+                      <div class="mb-2">
+                        <span class="font-semibold text-yellow-400">Stack Trace (First 3 lines):</span>
+                      </div>
+                      <div class="bg-gray-900 rounded p-2 text-xs overflow-x-auto">
+                        <% @original_exception.backtrace.first(3).each_with_index do |line, index| %>
+                          <div class="mb-1">
+                            <span class="text-blue-400 font-semibold"><%= index + 1 %>:</span>
+                            <span class="text-gray-300"><%= line %></span>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+      <%= link_to "Back to Home", '/', class: "btn-primary" %>
+      <button type="button" onclick="sendErrorToChatbox()" id="chatbox-fix-btn" class="border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded-lg transition-colors duration-200" style="display: none;">
+        Fix in Chatbox
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyErrorDetails() {
+    const errorDetails = document.getElementById('error-details');
+    if (errorDetails) {
+      const text = errorDetails.innerText;
+      copyToClipboard(text).then(() => {
+        const btn = document.getElementById('copy-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!';
+        btn.className = 'border border-green-600 text-green-600 hover:bg-green-50 font-medium py-1 px-3 rounded text-sm transition-colors';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.className = 'border border-blue-600 text-blue-600 hover:bg-blue-50 font-medium py-1 px-3 rounded text-sm transition-colors';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Copy failed. Error details:\n' + text);
+      });
+    }
+  }
+
+  function sendErrorToChatbox() {
+    const errorMessage = '<%= j @original_exception&.message || @error_description %>';
+    
+    window.sdkUtils.sendErrorForFix({
+      errorMessage: errorMessage
+    });
+  }
+
+  // Check SDK availability and show/hide button accordingly
+  document.addEventListener('DOMContentLoaded', function() {
+    const chatboxBtn = document.getElementById('chatbox-fix-btn');
+    if (chatboxBtn) {
+      // Check periodically for SDK availability (in case it loads later)
+      function checkSDKAndShowButton() {
+        if (window.isSDKAvailable && window.isSDKAvailable()) {
+          chatboxBtn.style.display = 'block';
+          return true;
+        }
+        return false;
+      }
+
+      // Initial check
+      if (!checkSDKAndShowButton()) {
+        // Retry after 1 second (in case SDK is loading)
+        setTimeout(checkSDKAndShowButton, 1000);
+        // Final retry after 3 seconds
+        setTimeout(checkSDKAndShowButton, 3000);
+      }
+    }
+  });
+</script>

@@ -1,0 +1,266 @@
+<div class="bg-surface py-20">
+  <div class="container-lg">
+    <!-- Plan Header -->
+    <div class="text-center mb-16">
+      <div class="badge-free mb-4">Includes FREE £<%= @hosting_plan.monthly_savings %>/month Marketing Suite</div>
+      <h1 class="text-4xl md:text-6xl font-black text-text-primary mb-4">
+        <%= @hosting_plan.name %> Plan
+      </h1>
+      <p class="text-xl text-text-secondary mb-8 max-w-3xl mx-auto">
+        <%= @hosting_plan.description %>
+      </p>
+      
+      <!-- Pricing Display -->
+      <div class="bg-surface-elevated rounded-2xl p-8 max-w-md mx-auto mb-8">
+        <div class="price-display justify-center mb-4">
+          <span class="price-currency">£</span>
+          <span class="price-amount"><%= sprintf("%.2f", @hosting_plan.price_monthly) %></span>
+          <span class="price-period">/month</span>
+        </div>
+        
+        <div class="badge-free-large mb-4">
+          + FREE £<%= @hosting_plan.monthly_savings %>/month Tools
+        </div>
+        
+        <div class="text-text-muted mb-6">
+          <strong>Annual Savings: £<%= @hosting_plan.annual_savings %></strong>
+        </div>
+        
+        <button class="btn btn-primary w-full text-lg py-4">
+          Start with <%= @hosting_plan.name %> Plan
+        </button>
+        
+        <p class="text-xs text-text-muted text-center mt-4">
+          30-day money-back guarantee • FREE setup • Cancel anytime
+        </p>
+      </div>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="grid lg:grid-cols-2 gap-12 mb-16">
+      <!-- Core Hosting Features -->
+      <div class="bg-surface-elevated rounded-xl p-8">
+        <h2 class="text-2xl font-bold text-text-primary mb-6 flex items-center">
+          <span class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-surface mr-3">
+            🏠
+          </span>
+          Hosting Features
+        </h2>
+        
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong><%= @hosting_plan.websites_display %> Website<%= 's' unless @hosting_plan.websites_limit == 1 %></strong>
+              <p class="text-text-muted text-sm">Host multiple sites on one account</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong><%= @hosting_plan.storage_display %> SSD Storage</strong>
+              <p class="text-text-muted text-sm">Lightning-fast SSD drives for optimal performance</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong><%= @hosting_plan.bandwidth_display %> Bandwidth</strong>
+              <p class="text-text-muted text-sm">Handle high traffic without slowdowns</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong>99.9% Uptime Guarantee</strong>
+              <p class="text-text-muted text-sm">Your site stays online when it matters most</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong>Free SSL Certificate</strong>
+              <p class="text-text-muted text-sm">Secure your site and boost SEO rankings</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <span class="feature-check text-sm">✓</span>
+            <div>
+              <strong>24/7 Expert Support</strong>
+              <p class="text-text-muted text-sm">Get help whenever you need it</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FREE Marketing Tools -->
+      <div class="bg-free-bg rounded-xl p-8 border-2 border-free">
+        <h2 class="text-2xl font-bold text-text-primary mb-6 flex items-center">
+          <span class="w-8 h-8 bg-free rounded-full flex items-center justify-center text-surface mr-3">
+            🎁
+          </span>
+          FREE Marketing Suite
+          <span class="badge-free ml-3">£<%= @hosting_plan.monthly_savings %>/mo Value</span>
+        </h2>
+        
+        <div class="feature-list">
+          <% if @hosting_plan.email_marketing? %>
+            <div class="feature-item">
+              <span class="feature-check text-sm">✓</span>
+              <div>
+                <strong>Email Marketing Suite</strong>
+                <span class="badge-free text-xs ml-2">£29/mo value</span>
+                <p class="text-text-muted text-sm">Unlimited subscribers, drag-drop builder, automation</p>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if @hosting_plan.seo_tools? %>
+            <div class="feature-item">
+              <span class="feature-check text-sm">✓</span>
+              <div>
+                <strong>SEO & Analytics Tools</strong>
+                <span class="badge-free text-xs ml-2">£19/mo value</span>
+                <p class="text-text-muted text-sm">Keyword research, rank tracking, performance analytics</p>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if @hosting_plan.social_scheduler? %>
+            <div class="feature-item">
+              <span class="feature-check text-sm">✓</span>
+              <div>
+                <strong>Social Media Scheduler</strong>
+                <span class="badge-free text-xs ml-2">£19/mo value</span>
+                <p class="text-text-muted text-sm">Schedule posts across all major platforms</p>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if @hosting_plan.migration_support? %>
+            <div class="feature-item">
+              <span class="feature-check text-sm">✓</span>
+              <div>
+                <strong>FREE Website Migration</strong>
+                <span class="badge-free text-xs ml-2">£99 value</span>
+                <p class="text-text-muted text-sm">We'll move your site with zero downtime</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <div class="bg-surface rounded-lg p-4 mt-6">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-free">Total FREE Value</div>
+            <div class="text-3xl font-black text-text-primary">£<%= @hosting_plan.monthly_savings %>/month</div>
+            <div class="text-sm text-text-muted">£<%= @hosting_plan.annual_savings %>/year savings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison with Competitors -->
+    <div class="bg-surface-elevated rounded-xl p-8 mb-16">
+      <h2 class="text-3xl font-bold text-text-primary text-center mb-8">
+        <%= @hosting_plan.name %> vs Competitors
+      </h2>
+      
+      <div class="overflow-x-auto">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="us-column">Your <%= @hosting_plan.name %> Plan</th>
+              <th class="competitor-column">Typical Competitors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-semibold">Monthly Hosting Cost</td>
+              <td class="us-column">£<%= sprintf("%.2f", @hosting_plan.price_monthly) %></td>
+              <td class="competitor-column">£<%= sprintf("%.2f", @hosting_plan.price_monthly) %></td>
+            </tr>
+            
+            <% if @hosting_plan.email_marketing? %>
+            <tr>
+              <td class="font-semibold">Email Marketing</td>
+              <td class="us-column"><span class="badge-free text-xs">FREE</span></td>
+              <td class="competitor-column">£29/month extra</td>
+            </tr>
+            <% end %>
+            
+            <% if @hosting_plan.seo_tools? %>
+            <tr>
+              <td class="font-semibold">SEO Tools</td>
+              <td class="us-column"><span class="badge-free text-xs">FREE</span></td>
+              <td class="competitor-column">£19/month extra</td>
+            </tr>
+            <% end %>
+            
+            <% if @hosting_plan.social_scheduler? %>
+            <tr>
+              <td class="font-semibold">Social Media Tools</td>
+              <td class="us-column"><span class="badge-free text-xs">FREE</span></td>
+              <td class="competitor-column">£19/month extra</td>
+            </tr>
+            <% end %>
+            
+            <tr>
+              <td class="font-semibold">Site Migration</td>
+              <td class="us-column"><span class="badge-free text-xs">FREE</span></td>
+              <td class="competitor-column">£99 one-time</td>
+            </tr>
+            
+            <tr class="border-t-4 border-primary font-bold text-lg">
+              <td>Total Monthly Cost</td>
+              <td class="us-column text-2xl text-free">£<%= sprintf("%.2f", @hosting_plan.price_monthly) %></td>
+              <td class="competitor-column text-2xl">£<%= sprintf("%.2f", @hosting_plan.price_monthly + @hosting_plan.monthly_savings) %>+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="text-center mt-8">
+        <div class="savings-highlight text-2xl">
+          You Save £<%= @hosting_plan.monthly_savings %> Every Month!
+        </div>
+        <p class="text-text-muted mt-2">
+          That's £<%= @hosting_plan.annual_savings %> per year in your pocket
+        </p>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+      <div class="bg-hero-gradient rounded-2xl p-12 text-surface">
+        <h2 class="text-3xl md:text-4xl font-black mb-6">
+          Ready to Start Saving £<%= @hosting_plan.monthly_savings %>/Month?
+        </h2>
+        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          Join thousands of smart business owners who chose the complete solution.
+          Get professional hosting PLUS all the marketing tools you need.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <button class="btn btn-lg btn-surface">
+            Start with <%= @hosting_plan.name %> - £<%= sprintf("%.2f", @hosting_plan.price_monthly) %>/month
+          </button>
+          <%= link_to hosting_plans_path, class: "btn btn-lg btn-secondary-outline" do %>
+            Compare All Plans
+          <% end %>
+        </div>
+        
+        <div class="flex items-center justify-center gap-6 text-sm opacity-75">
+          <span>✓ 30-day money-back guarantee</span>
+          <span>✓ FREE setup & migration</span>
+          <span>✓ Cancel anytime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

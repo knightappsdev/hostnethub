@@ -1,0 +1,170 @@
+<% content_for :title, "Edit Hosting plan" %>
+
+<div class="container-md">
+  <!-- Page Title -->
+  <div class="flex items-center space-x-4 mb-6">
+    <%= link_to admin_hosting_plan_path(@hosting_plan.id), class: "btn-ghost text-sm py-1 px-3" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Hosting plan
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Hosting plan</h1>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div class="card-body">
+      <%= form_with model: [:admin, @hosting_plan], local: true, class: "space-y-6" do |form| %>
+        <%= render 'shared/error_messages', model: @hosting_plan %>
+
+        <!-- Name -->
+        <div class="mb-4">
+          <%= form.label :name, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Name<% if field_required?(@hosting_plan, :name) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_field :name, {
+            placeholder: "Enter name...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :name) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:name].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:name].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <%= form.label :description, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Description<% if field_required?(@hosting_plan, :description) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.text_area :description, {
+            rows: 5,
+            placeholder: "Enter description...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :description) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:description].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:description].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Price monthly -->
+        <div class="mb-4">
+          <%= form.label :price_monthly, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Price monthly<% if field_required?(@hosting_plan, :price_monthly) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :price_monthly, {
+            placeholder: "Enter price monthly...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :price_monthly) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:price_monthly].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:price_monthly].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Websites limit -->
+        <div class="mb-4">
+          <%= form.label :websites_limit, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Websites limit<% if field_required?(@hosting_plan, :websites_limit) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :websites_limit, {
+            placeholder: "Enter websites limit...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :websites_limit) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:websites_limit].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:websites_limit].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Storage gb -->
+        <div class="mb-4">
+          <%= form.label :storage_gb, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Storage gb<% if field_required?(@hosting_plan, :storage_gb) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :storage_gb, {
+            placeholder: "Enter storage gb...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :storage_gb) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:storage_gb].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:storage_gb].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Bandwidth gb -->
+        <div class="mb-4">
+          <%= form.label :bandwidth_gb, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" do %>
+            Bandwidth gb<% if field_required?(@hosting_plan, :bandwidth_gb) %> <span class="text-red-500">*</span><% end %>
+          <% end %>
+          <%= form.number_field :bandwidth_gb, {
+            placeholder: "Enter bandwidth gb...",
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+          }.merge(field_required?(@hosting_plan, :bandwidth_gb) ? { required: true } : {}) %>
+          <% if @hosting_plan.errors[:bandwidth_gb].any? %>
+            <p class="text-sm text-red-500 mt-1"><%= @hosting_plan.errors[:bandwidth_gb].first %></p>
+          <% end %>
+        </div>
+
+        <!-- Email marketing -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :email_marketing,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Email marketing</span>
+          </label>
+        </div>
+
+        <!-- Seo tools -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :seo_tools,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Seo tools</span>
+          </label>
+        </div>
+
+        <!-- Social scheduler -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :social_scheduler,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Social scheduler</span>
+          </label>
+        </div>
+
+        <!-- Migration support -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :migration_support,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Migration support</span>
+          </label>
+        </div>
+
+        <!-- Featured -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :featured,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Featured</span>
+          </label>
+        </div>
+
+        <!-- Active -->
+        <div class="mb-4">
+          <label class="flex items-center cursor-pointer">
+            <%= form.check_box :active,
+                  class: "mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" %>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Active</span>
+          </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+          <%= link_to admin_hosting_plan_path(@hosting_plan.id), class: "btn-ghost" do %>
+            Cancel
+          <% end %>
+          <%= form.submit "Update Hosting plan", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

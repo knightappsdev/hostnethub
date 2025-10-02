@@ -1,0 +1,24 @@
+require 'rails_helper'
+
+RSpec.describe "Orders", type: :request do
+  # Authentication required
+  let(:user) { create(:user) }
+  before { sign_in_as(user) }
+
+  # User-specific order
+  let!(:order) { create(:order, user: user) }
+
+  describe "GET /orders" do
+    it "returns http success" do
+      get orders_path
+      expect(response).to be_success_with_view_check('index')
+    end
+  end
+
+  describe "GET /orders/:id" do
+    it "returns http success" do
+      get order_path(order)
+      expect(response).to be_success_with_view_check('show')
+    end
+  end
+end
